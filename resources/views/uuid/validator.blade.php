@@ -5,7 +5,8 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
+    <meta
+        name="viewport"
         content="width=device-width, initial-scale=1.0">
 
     <title>UUID Validator</title>
@@ -16,11 +17,14 @@
 
 </head>
 
+
 <body class="bg-light">
+
 
 <div class="container py-5">
 
-    <!-- Header -->
+
+    <!-- HEADER -->
 
     <div class="d-flex justify-content-between align-items-center mb-4">
 
@@ -31,10 +35,11 @@
             </h1>
 
             <p class="text-muted">
-                Validate a UUID and detect its version.
+                Validate UUID format, detect version and inspect history.
             </p>
 
         </div>
+
 
         <a
             href="{{ route('uuid.dashboard') }}"
@@ -47,9 +52,10 @@
     </div>
 
 
-    <!-- Validator -->
+    <!-- VALIDATOR -->
 
     <div class="card shadow-sm border-0">
+
 
         <div class="card-header bg-white">
 
@@ -62,25 +68,36 @@
 
         <div class="card-body">
 
+
             <form
                 method="POST"
                 action="{{ route('uuid.validator.check') }}">
 
+
                 @csrf
 
+
                 <label class="form-label fw-semibold">
+
                     Enter UUID
+
                 </label>
 
+
                 <div class="input-group">
+
 
                     <input
                         type="text"
                         name="uuid"
                         class="form-control"
-                        value="{{ old('uuid', $result['uuid'] ?? '') }}"
+                        value="{{ old(
+                            'uuid',
+                            $result['uuid'] ?? ''
+                        ) }}"
                         placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
                         required>
+
 
                     <button
                         class="btn btn-primary"
@@ -90,39 +107,55 @@
 
                     </button>
 
+
                 </div>
+
 
                 @error('uuid')
 
                     <div class="text-danger mt-2">
+
                         {{ $message }}
+
                     </div>
 
                 @enderror
+
 
             </form>
 
 
             @isset($result)
 
+
                 <hr class="my-4">
 
 
                 @if($result['valid'])
 
+
                     <div class="alert alert-success">
 
+
                         <h5 class="fw-bold">
+
                             ✓ Valid UUID
+
                         </h5>
 
-                        <p class="mb-2">
+
+                        <p>
                             {{ $result['message'] }}
                         </p>
 
+
                         <hr>
 
-                        <div class="row">
+
+                        <div class="row g-4">
+
+
+                            <!-- UUID -->
 
                             <div class="col-md-6">
 
@@ -138,6 +171,8 @@
 
                             </div>
 
+
+                            <!-- VERSION -->
 
                             <div class="col-md-6">
 
@@ -155,92 +190,187 @@
 
                             </div>
 
-                        </div>
+
+                            <!-- HISTORY -->
+
+                            <div class="col-md-6">
+
+                                <strong>
+                                    Generation History:
+                                </strong>
+
+                                <br>
 
 
-                        <div class="mt-3">
+                                @if($result['exists_in_history'])
 
-                            @if($result['exists_in_history'])
+                                    <span class="badge bg-success">
 
-                                <span class="badge bg-success">
+                                        Found in history
 
-                                    ✓ Found in generation history
+                                    </span>
 
-                                </span>
 
-                                @if($result['generated_type'])
+                                    @if($result['generated_type'])
 
-                                    <span class="ms-2">
+                                        <div class="mt-2">
 
-                                        Generated as:
-                                        <strong>
-                                            {{ $result['generated_type'] }}
-                                        </strong>
+                                            Generated as:
+
+                                            <strong>
+
+                                                {{ $result['generated_type'] }}
+
+                                            </strong>
+
+                                        </div>
+
+                                    @endif
+
+                                @else
+
+                                    <span class="badge bg-secondary">
+
+                                        Not found in history
 
                                     </span>
 
                                 @endif
 
-                            @else
+                            </div>
 
-                                <span class="badge bg-secondary">
 
-                                    Not found in local generation history
+                            <!-- UNIQUENESS -->
 
-                                </span>
+                            <div class="col-md-6">
+
+                                <strong>
+                                    Uniqueness:
+                                </strong>
+
+                                <br>
+
+
+                                @if($result['is_unique'])
+
+                                    <span class="badge bg-success">
+
+                                        ✓ Not found in local history
+
+                                    </span>
+
+                                @else
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Already generated
+
+                                    </span>
+
+                                @endif
+
+                            </div>
+
+
+                            <!-- TIMESTAMP -->
+
+                            @if($result['timestamp'])
+
+                                <div class="col-md-12">
+
+                                    <div class="alert alert-info mb-0">
+
+                                        <strong>
+                                            UUID v7 Timestamp
+                                        </strong>
+
+                                        <br>
+
+                                        This UUID contains a timestamp
+                                        corresponding approximately to:
+
+                                        <strong>
+                                            {{ $result['timestamp'] }}
+                                        </strong>
+
+                                    </div>
+
+                                </div>
 
                             @endif
 
+
                         </div>
 
+
                     </div>
+
 
                 @else
 
+
                     <div class="alert alert-danger">
 
+
                         <h5 class="fw-bold">
+
                             ✗ Invalid UUID
+
                         </h5>
 
+
                         <p class="mb-0">
+
                             {{ $result['message'] }}
+
                         </p>
+
 
                     </div>
 
+
                 @endif
+
 
             @endisset
 
+
         </div>
 
     </div>
 
 
-    <!-- UUID Information -->
+    <!-- INFORMATION -->
 
     <div class="card shadow-sm border-0 mt-4">
 
+
         <div class="card-body">
 
+
             <h5 class="fw-bold">
+
                 UUID Version Detection
+
             </h5>
+
 
             <p class="text-muted mb-0">
 
-                The validator checks the UUID structure and reads
-                the UUID version field to identify versions such as
-                UUID v4 and UUID v7.
+                The validator checks the UUID structure,
+                detects its version and checks whether
+                the UUID exists in the local generation history.
 
             </p>
+
 
         </div>
 
     </div>
 
+
 </div>
+
 
 </body>
 
