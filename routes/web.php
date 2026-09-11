@@ -3,27 +3,43 @@
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | UUID Generator
 |--------------------------------------------------------------------------
 */
 
-// Dashboard
-Route::get('/', [UserController::class, 'dashboard'])
-    ->name('uuid.dashboard');
 
-// Generate UUID v4
-Route::get('/uuid', [UserController::class, 'uuid'])
-    ->name('uuid.generate');
+Route::get(
+    '/',
+    [UserController::class, 'dashboard']
+)->name('uuid.dashboard');
 
-// Generate Ordered UUID
-Route::get('/ordered-uuid', [UserController::class, 'orderedUuid'])
-    ->name('uuid.ordered');
 
-// Generate UUID v7
-Route::get('/uuid7', [UserController::class, 'uuid7'])
-    ->name('uuid.v7');
+/*
+|--------------------------------------------------------------------------
+| UUID Generation
+|--------------------------------------------------------------------------
+*/
+
+
+Route::get(
+    '/uuid',
+    [UserController::class, 'uuid']
+)->name('uuid.generate');
+
+
+Route::get(
+    '/ordered-uuid',
+    [UserController::class, 'orderedUuid']
+)->name('uuid.ordered');
+
+
+Route::get(
+    '/uuid7',
+    [UserController::class, 'uuid7']
+)->name('uuid.v7');
 
 
 /*
@@ -32,17 +48,19 @@ Route::get('/uuid7', [UserController::class, 'uuid7'])
 |--------------------------------------------------------------------------
 */
 
-// UUID generation history
-Route::get('/uuid-history', [UserController::class, 'history'])
-    ->name('uuid.history');
 
-// Delete individual history
+Route::get(
+    '/uuid-history',
+    [UserController::class, 'history']
+)->name('uuid.history');
+
+
 Route::delete(
     '/uuid-history/{uuidHistory}',
     [UserController::class, 'deleteHistory']
 )->name('uuid.history.delete');
 
-// Clear all history
+
 Route::delete(
     '/uuid-history-clear',
     [UserController::class, 'clearHistory']
@@ -51,13 +69,31 @@ Route::delete(
 
 /*
 |--------------------------------------------------------------------------
+| Regenerate UUID
+|--------------------------------------------------------------------------
+*/
+
+
+Route::post(
+    '/uuid-history/{uuidHistory}/regenerate',
+    [UserController::class, 'regenerate']
+)->name('uuid.history.regenerate');
+
+
+/*
+|--------------------------------------------------------------------------
 | UUID Validator
 |--------------------------------------------------------------------------
 */
 
-Route::get('/uuid-validator', function () {
-    return view('uuid.validator');
-})->name('uuid.validator');
+
+Route::get(
+    '/uuid-validator',
+    function () {
+        return view('uuid.validator');
+    }
+)->name('uuid.validator');
+
 
 Route::post(
     '/uuid-validator',
@@ -71,17 +107,39 @@ Route::post(
 |--------------------------------------------------------------------------
 */
 
+
 Route::get(
     '/bulk-uuid',
     [UserController::class, 'bulkGenerator']
 )->name('uuid.bulk');
+
 
 Route::post(
     '/bulk-uuid/generate',
     [UserController::class, 'bulkGenerate']
 )->name('uuid.bulk.generate');
 
+
 Route::post(
     '/bulk-uuid/export',
     [UserController::class, 'exportBulkCsv']
 )->name('uuid.bulk.export');
+
+
+/*
+|--------------------------------------------------------------------------
+| History Export
+|--------------------------------------------------------------------------
+*/
+
+
+Route::get(
+    '/uuid-history/export/csv',
+    [UserController::class, 'exportHistoryCsv']
+)->name('uuid.history.export.csv');
+
+
+Route::get(
+    '/uuid-history/export/json',
+    [UserController::class, 'exportHistoryJson']
+)->name('uuid.history.export.json');
